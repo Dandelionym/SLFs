@@ -24,45 +24,134 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 
-
-def f(t):
-    t = 2*t - 4 * np.pi / 8
-    return (1 / 16) * np.cos(16*t) + (1 / np.exp(t))
-
-fig = plt.figure(facecolor='white')
-ax = fig.add_subplot(1, 1, 1, projection='3d')
-
-X = np.arange(-5, 5, 0.01)
-Y = np.arange(-5, 5, 0.01)
-X, Y = np.meshgrid(X, Y)
-R = np.sqrt(X**2 + Y**2)
-Z = f(R)
-
-a, b = Z.shape
-P = 0.45
-
-for i in tqdm(range(1000)):
-    P = P + 0.0001
-    if np.random.randn() < P:
-        m, n = np.argmax(Z[np.random.choice(list(range(a)))]), np.argmax(Z[np.random.choice(list(range(a)))])
-    else:
-        m, n = np.argmin(Z[np.random.choice(list(range(a)))]), np.argmin(Z[np.random.choice(list(range(a)))])
-    if P < 1:
-        p, q = m + np.abs(np.random.randn())*10 * np.random.choice([-1, 1]), n + np.abs(np.random.randn())*10 * np.random.choice([-1, 1])
-    else:
-        p = q = 0
-    if P > 1:
-        break
-    Z = Z + f(np.sqrt((X+p)**2 + (Y+q)**2))
-
-plt.matshow(Z, cmap='Greys')
+np.random.seed(1)
 
 
-# ax.plot_surface(X, Y, Z / 8, rstride=1, cstride=1, linewidth=0, antialiased=False)
-#
-# ax.grid(False)
-# ax.spines['top'].set_visible(False)
-# ax.spines['left'].set_visible(False)
-# ax.spines['right'].set_visible(False)
-# ax.spines['bottom'].set_visible(False)
-plt.show()
+def SLF_Base(num_seeds):
+    def f(t):
+        """
+            F = -u * cos((w_0/v)*t + ⨏) + λ
+        :param t: x-x_0
+        :return: F value
+        """
+        # U is Activation Constant, depends on the certain solution env.
+        u = - (1 / 16)
+        # w is competition speed.
+        w = 16
+        # v is the activation speed.
+        v = 4
+        # x is the distance between current point and target point.
+        x = t
+        # y is ligand frequency, depends on certain ligand.
+        y = - 4 * np.pi / 8
+        # l is system energy, for stableness.
+        l = 1 / np.exp(t)
+        return u * np.cos((w/v) * x + y) + l
+
+
+
+    X = np.arange(-5, 5, 0.05)
+    Y = np.arange(-5, 5, 0.05)
+    X, Y = np.meshgrid(X, Y)
+    R = np.sqrt(X**2 + Y**2)
+    Z = f(R)
+    a, b = Z.shape
+    P = 0.45
+
+
+    for i in tqdm(range(num_seeds)):
+        P = P + 0.0000001
+        if np.random.randn() < P:
+            m, n = np.argmax(Z[np.random.choice(list(range(a)))]), np.argmax(Z[np.random.choice(list(range(a)))])
+        else:
+            m, n = np.argmin(Z[np.random.choice(list(range(a)))]), np.argmin(Z[np.random.choice(list(range(a)))])
+        if P < 1:
+            p, q = m + np.abs(np.random.randn())*10 * np.random.choice([-1, 1]), n + np.abs(np.random.randn())*10 * np.random.choice([-1, 1])
+        else:
+            p = q = 0
+        if P > 1:
+            break
+        Z = Z + f(np.sqrt((X+p)**2 + (Y+q)**2))
+
+    plt.matshow(Z, cmap='Greys')
+    plt.title(f"Local surface after modeling {num_seeds} states\n")
+    plt.colorbar()
+    plt.tight_layout()
+
+    # fig = plt.figure(facecolor='white')
+    # ax = fig.add_subplot(1, 1, 1, projection='3d')
+    # ax.plot_surface(X, Y, Z / 8, rstride=1, cstride=1, linewidth=0, antialiased=False)
+    #
+    # ax.grid(False)
+    # ax.spines['top'].set_visible(False)
+    # ax.spines['left'].set_visible(False)
+    # ax.spines['right'].set_visible(False)
+    # ax.spines['bottom'].set_visible(False)
+    plt.show()
+
+
+def SLF_y(num_seeds):
+    def f(t):
+        """
+            F = -u * cos((w_0/v)*t + ⨏) + λ
+        :param t: x-x_0
+        :return: F value
+        """
+        # U is Activation Constant, depends on the certain solution env.
+        u = - (1 / 16)
+        # w is competition speed.
+        w = 0.9
+        # v is the activation speed.
+        v = 1
+        # x is the distance between current point and target point.
+        x = 2 * t
+        # y is ligand frequency, depends on certain ligand.
+        y = - 1 * np.pi / 54
+        # l is system energy, for stableness.
+        l = None
+        return u * np.cos((w/v) * x + y)
+
+
+    X = np.arange(-5, 5, 0.05)
+    Y = np.arange(-5, 5, 0.05)
+    X, Y = np.meshgrid(X, Y)
+    R = np.sqrt(X**2 + Y**2)
+    Z = f(R)
+    a, b = Z.shape
+    P = 0.45
+
+
+    for i in tqdm(range(num_seeds)):
+        P = P + 0.0000001
+        if np.random.randn() < P:
+            m, n = np.argmax(Z[np.random.choice(list(range(a)))]), np.argmax(Z[np.random.choice(list(range(a)))])
+        else:
+            m, n = np.argmin(Z[np.random.choice(list(range(a)))]), np.argmin(Z[np.random.choice(list(range(a)))])
+        if P < 1:
+            p, q = m + np.abs(np.random.randn())*10 * np.random.choice([-1, 1]), n + np.abs(np.random.randn())*10 * np.random.choice([-1, 1])
+        else:
+            p = q = 0
+        if P > 1:
+            break
+        Z = Z + f(np.sqrt((X+p)**2 + (Y+q)**2))
+
+    plt.matshow(Z, cmap='Greys')
+    plt.title(f"Local surface after modeling {num_seeds} states\n")
+    plt.colorbar()
+    plt.tight_layout()
+
+    # fig = plt.figure(facecolor='white')
+    # ax = fig.add_subplot(1, 1, 1, projection='3d')
+    # ax.plot_surface(X, Y, Z / 8, rstride=1, cstride=1, linewidth=0, antialiased=False)
+    #
+    # ax.grid(False)
+    # ax.spines['top'].set_visible(False)
+    # ax.spines['left'].set_visible(False)
+    # ax.spines['right'].set_visible(False)
+    # ax.spines['bottom'].set_visible(False)
+    plt.show()
+
+
+if __name__ == '__main__':
+    for i in [1000]:
+        SLF_y(i)
