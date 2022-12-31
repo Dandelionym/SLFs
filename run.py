@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 """
+
+    ** NOTE: This code is dropped on Dec 31, 2022. A new version should be attached in the future. **
+
     INFORMATION TITLE
     -----------------------------------------------------------------
     AUTHOR: Mellen Y.Pu
