@@ -15,7 +15,7 @@
                                       ONE DOOR OPENS ALL THE WINDOWS.
 
     @INTRODUCTION: 
-     - The mainland of SLF.
+     - The mainland of SLF. (No useful code here. Skipped.)
     @FUNCTIONAL EXPLATION:
      - launch home.
     @LAUNCH:
