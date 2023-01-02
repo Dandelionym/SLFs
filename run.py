@@ -95,6 +95,7 @@ def SLF_Base(num_seeds):
 
 
 def SLF_y(num_seeds):
+   """  Local SLF  """
 
     V = 1 / np.exp(10)
 
