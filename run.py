@@ -31,6 +31,7 @@ np.random.seed(1)
 
 
 def SLF_Base(num_seeds):
+   """  Basic mode  """
     def f(t):
         """
             F = -u * cos((w_0/v)*t + ⨏) + λ
